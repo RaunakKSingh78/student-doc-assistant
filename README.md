@@ -1,5 +1,5 @@
 # Student Document Assistant
-**IITISoC 2024 — AI / ML Track**
+**IITISoC 2026 — AI / ML Track**
 
 A Retrieval-Augmented Generation (RAG) assistant for IIT Indore students. Ask a question about institutional policies, and the system retrieves the relevant source passages and generates a grounded answer with citations.
 
