@@ -9,10 +9,10 @@ A Retrieval-Augmented Generation (RAG) assistant for IIT Indore students. Ask a 
 
 | Member | Role | Primary file |
 |--------|------|--------------|
-| A | Data & Preprocessing Lead | `src/ingestion.py` |
-| B | Retrieval Engineer | `src/retriever.py` |
-| C | Generation & Backend Lead | `src/generator.py` |
-| D | Frontend & Documentation Lead | `app/main.py` |
+| A: Soham Khairnar      | Data & Preprocessing Lead     | `src/ingestion.py` |
+| B: Raunak Kumar Singh  | Retrieval Engineer            | `src/retriever.py` |
+| C: Sarthak Pandey      | Generation & Backend Lead     | `src/generator.py` |
+| D: Sufiyan Ahmad       | Frontend & Documentation Lead | `app/main.py` |
 
 ---
 
@@ -78,12 +78,12 @@ The app opens at `http://localhost:8501` in your browser.
 
 ## Running individual modules
 
-**Test retrieval (Member B):**
+**Test retrieval :**
 ```bash
 python src/retriever.py
 ```
 
-**Re-index documents after adding new PDFs (Member A+B):**
+**Re-index documents after adding new PDFs :**
 ```bash
 python src/ingestion.py
 ```
@@ -104,29 +104,13 @@ student-doc-assistant/
 │   └── generator.py       # Member C: LLM + citations
 ├── app/
 │   └── main.py            # Member D: Streamlit UI
-├── notebooks/
-│   ├── week1_learning.ipynb
-│   ├── week3_retrieval.ipynb
-│   └── week7_evaluation.ipynb
-├── evaluation/
-│   ├── test_queries.json  # 20 labelled test queries
-│   └── results.csv        # Evaluation output (Week 7)
 ├── .env.example           # API key template (copy to .env)
 ├── .gitignore
-├── requirements.txt
 └── README.md
 ```
 
 ---
 
-## Evaluation (Week 7)
-
-We report two retrieval quality metrics:
-
-- **Hit Rate @ 3**: percentage of test queries where the correct chunk appears in the top-3 results. Target: > 80%.
-- **MRR (Mean Reciprocal Rank)**: average rank position of the correct chunk. Target: > 0.60.
-
-Run the evaluation notebook: `notebooks/week7_evaluation.ipynb`
 
 ---
 
