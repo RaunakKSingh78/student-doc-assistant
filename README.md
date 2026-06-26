@@ -132,4 +132,4 @@ Run the evaluation notebook: `notebooks/week7_evaluation.ipynb`
 
 ## Acknowledgements
 
-Built for IITISoC 2024, Science & Technology Council, IIT Indore.
+Built for IITISoC 2026, Science & Technology Council, IIT Indore.
