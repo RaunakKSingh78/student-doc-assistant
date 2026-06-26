@@ -33,7 +33,7 @@ Source documents are stored in `data/raw/`. See `data/processed/` for chunked ou
 | Embedding model | `all-MiniLM-L6-v2` via sentence-transformers |
 | LLM | Llama 3 via Groq API (free) |
 | Keyword search | BM25 via rank-bm25 |
-| UI | Streamlit |
+| UI | NextJs |
 
 ---
 
@@ -103,7 +103,7 @@ student-doc-assistant/
 │   ├── retriever.py       # Member B: ChromaDB + BM25 search
 │   └── generator.py       # Member C: LLM + citations
 ├── app/
-│   └── main.py            # Member D: Streamlit UI
+│   └── main.py            # Member D: NextJs UI
 ├── .env.example           # API key template (copy to .env)
 ├── .gitignore
 └── README.md
