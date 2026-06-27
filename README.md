@@ -31,7 +31,7 @@ Source documents are stored in `data/raw/`. See `data/processed/` for chunked ou
 | Pipeline framework | LangChain |
 | Vector database | ChromaDB (local) |
 | Embedding model | `all-MiniLM-L6-v2` via sentence-transformers |
-| LLM | Llama 3 via Groq API (free) |
+| LLM | "Llama 3.3 70b versatile" via Groq API (free) |
 | Keyword search | BM25 via rank-bm25 |
 | UI | NextJs |
 
