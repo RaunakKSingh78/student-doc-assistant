@@ -1,0 +1,13 @@
+langchain
+langchain-core
+langchain-community
+langchain-huggingface
+langchain-text-splitters
+langchain-groq
+pymupdf
+sentence-transformers
+chromadb
+python-dotenv
+docx2txt
+openpyxl
+unstructured
