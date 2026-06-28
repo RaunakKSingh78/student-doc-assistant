@@ -87,6 +87,7 @@ cp .env.example .env
 ## Running the app
 
 ```bash
+To see UI, you must be inside frontend folder(use cd frontend)
 1. To start backend server:  uvicorn app.backend:app --reload --host 0.0.0.0 --port 8000
 2. To start app : npm run dev
 
