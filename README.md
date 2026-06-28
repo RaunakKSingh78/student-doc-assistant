@@ -87,10 +87,12 @@ cp .env.example .env
 ## Running the app
 
 ```bash
-streamlit run app/main.py
+1. To start backend server:  uvicorn app.backend:app --reload --host 0.0.0.0 --port 8000
+2. To start app : npm run dev
+
 ```
 
-The app opens at `http://localhost:8501` in your browser.
+The app opens at `http://localhost:3000` in your browser.
 
 ---
 
