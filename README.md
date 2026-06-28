@@ -37,7 +37,21 @@ Source documents are stored in `data/raw/`. See `data/processed/` for chunked ou
 
 ---
 
-## Setup (run once)
+### Installation & Setup
+
+**0. Install uv**
+If you don't have `uv` installed, you can install it using one of the following commands:
+```bash
+# On macOS and Linux
+curl -LsSf [https://astral.sh/uv/install.sh](https://astral.sh/uv/install.sh) | sh
+
+# On Windows (PowerShell)
+powershell -ExecutionPolicy ByPass -c "irm [https://astral.sh/uv/install.ps1](https://astral.sh/uv/install.ps1) | iex"
+
+# Alternatively, via pip or Homebrew
+pip install uv
+brew install uv
+```
 
 **1. Clone the repo**
 ```bash
@@ -47,14 +61,18 @@ cd student-doc-assistant
 
 **2. Create a virtual environment (recommended)**
 ```bash
-python -m venv venv
-source venv/bin/activate      # Mac / Linux
-venv\Scripts\activate         # Windows
+# Create a virtual environment using uv
+uv venv
+
+# Activate the virtual environment
+source .venv/bin/activate       # Mac / Linux
+.venv\Scripts\activate          # Windows
+
 ```
 
 **3. Install dependencies**
 ```bash
-pip install -r requirements.txt
+uv add -r requirements.txt
 ```
 
 **4. Add your API key**
