@@ -50,7 +50,7 @@ def main():
     rag_search = RAGSearch()
     
     while True:
-        query = input("You :")
+        query = input("You: ")
         print(f"\n[INFO] Running RAG query: '{query}'")
         summary = rag_search.search_and_summarize(query, top_k=5)
 
