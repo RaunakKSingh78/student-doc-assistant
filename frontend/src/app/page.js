@@ -97,7 +97,7 @@ export default function Home() {
               </form>
 
               <div className="mt-4 flex flex-wrap justify-center gap-3">
-                {["Accommodation Rules", "Hostel ruels", "Penalty Points", "PhD and PG Rules", "UG Rules"].map((label) => (
+                {["Accommodation Rules", "Hostel Rules", "Penalty Points", "PhD and PG Rules", "UG Rules"].map((label) => (
                   <span
                     key={label}
                     className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-slate-200 shadow-[0_10px_30px_rgba(15,23,42,0.25)]"
