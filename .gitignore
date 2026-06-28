@@ -1,6 +1,4 @@
-# ========================
-# Python
-# ========================
+# ===== PYTHON =====
 __pycache__/
 *.py[cod]
 *.pyo
@@ -9,24 +7,27 @@ __pycache__/
 *.egg-info/
 dist/
 build/
-.eggs/
 *.egg
+.eggs/
+
+# Virtual environments
 venv/
 env/
-.venv/
 .env/
-pip-wheel-metadata/
+.venv/
 
-# ========================
-# Environment Variables (CRITICAL)
-# ========================
+# ===== ENVIRONMENT & SECRETS =====
 .env
 .env.local
 .env.*.local
 
-# ========================
-# Node.js / Next.js
-# ========================
+# ===== CHROMADB =====
+chroma_db/
+*.chroma
+chromadb/
+
+
+# ===== NODE / NEXT.JS =====
 node_modules/
 .next/
 out/
@@ -34,29 +35,15 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
-.vercel
 
-# ========================
-# ChromaDB
-# ========================
-chroma/
-chroma_db/
-*.chroma
-data/processed/
-
-# ========================
-# OS & Editor
-# ========================
+# ===== OS =====
 .DS_Store
 Thumbs.db
+desktop.ini
+
+# ===== IDE =====
 .vscode/
 .idea/
-*.swp
-*.swo
-
-# ========================
-# Logs & Misc
-# ========================
-*.log
-logs/
+*.suo
+*.ntvs*
 .cache/
