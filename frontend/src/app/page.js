@@ -6,7 +6,6 @@ const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "http://localhost:8000";
 
 export default function Home() {
   const [query, setQuery] = useState("");
-  const [topK, setTopK] = useState(5);
   const [answer, setAnswer] = useState("");
   const [sources, setSources] = useState([]);
   const [status, setStatus] = useState("Checking backend...");
@@ -39,7 +38,7 @@ export default function Home() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ query, top_k: topK }),
+        body: JSON.stringify({ query, top_k: 5 }),
       });
 
       if (!response.ok) {
@@ -58,124 +57,115 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 px-4 py-10 sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-6xl space-y-8">
-        <section className="rounded-3xl bg-white p-8 shadow-2xl shadow-slate-200">
-          <div className="space-y-4">
-            <div>
-              <p className="text-sm font-medium uppercase tracking-[0.24em] text-sky-600">
-                Student Document Assistant
-              </p>
-              <h1 className="mt-3 text-4xl font-semibold tracking-tight sm:text-5xl">
-                Ask questions and inspect the retrieved passages.
-              </h1>
-              <p className="mt-4 max-w-3xl text-base text-slate-600 sm:text-lg">
-                Enter a query, then review the AI answer with the documents that were used to generate it.
-              </p>
-            </div>
-
-            <div className="rounded-3xl border border-slate-200 bg-slate-50 p-6">
-              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                <div>
-                  <p className="text-sm font-medium text-slate-900">Backend status</p>
-                  <p className="text-sm text-slate-600">{status}</p>
-                </div>
-                <div className="flex items-center gap-3">
-                  <label className="text-sm font-medium text-slate-700" htmlFor="topK">
-                    Top K
-                  </label>
-                  <select
-                    id="topK"
-                    value={topK}
-                    onChange={(event) => setTopK(Number(event.target.value))}
-                    className="rounded-full border border-slate-300 bg-white px-4 py-2 text-sm text-slate-900 outline-none transition focus:border-sky-500"
-                  >
-                    {[3, 5, 7, 10].map((value) => (
-                      <option key={value} value={value}>
-                        {value}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+    <div className="futuristic-bg min-h-screen overflow-hidden text-white">
+      <div className="glow-ring"></div>
+      <div className="relative z-10 flex min-h-screen flex-col">
+        <section className="flex min-h-screen items-center justify-center px-4 py-10 sm:px-6 lg:px-10">
+          <div className="w-full max-w-5xl rounded-[40px] border border-white/10 bg-[rgba(255,255,255,0.06)] p-10 shadow-[0_60px_140px_rgba(2,10,30,0.45)] backdrop-blur-2xl">
+            <div className="space-y-8 text-center">
+              <div className="inline-flex rounded-full border border-sky-300/30 bg-sky-300/10 px-5 py-2 text-xs uppercase tracking-[0.35em] text-sky-200 shadow-[0_0_40px_rgba(56,189,248,0.18)]">
+                AI Document Assistant
+              </div>
+              <div>
+                <h1 className="text-5xl font-semibold tracking-tight text-white sm:text-6xl">
+                  Hey Armando!
+                  <span className="block text-transparent bg-clip-text bg-gradient-to-r from-sky-300 via-fuchsia-300 to-emerald-300">
+                    Can I help you with anything?
+                  </span>
+                </h1>
+                <p className="mx-auto mt-6 max-w-3xl text-base leading-8 text-slate-300 sm:text-lg">
+                  Ready to assist you with anything you need. Type a question below and discover answers powered by your documents.
+                </p>
               </div>
 
-              <form onSubmit={handleSubmit} className="mt-6 space-y-4">
-                <label className="block text-sm font-medium text-slate-700" htmlFor="query">
-                  Ask a question about student documents
-                </label>
-                <textarea
-                  id="query"
+              <form onSubmit={handleSubmit} className="mx-auto flex w-full max-w-3xl flex-col gap-4 sm:flex-row">
+                <input
+                  type="text"
                   value={query}
                   onChange={(event) => setQuery(event.target.value)}
-                  rows={5}
-                  placeholder="Example: What are the hostel penalty rules for late checkout?"
-                  className="w-full rounded-3xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm outline-none transition focus:border-sky-500"
+                  placeholder="Ask anything you need"
+                  className="w-full rounded-full border border-white/10 bg-slate-950/70 px-6 py-4 text-base text-white placeholder:text-slate-500 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] outline-none transition duration-300 focus:border-sky-400 focus:ring-2 focus:ring-sky-400/20"
                   required
                 />
-
-                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                  <button
-                    type="submit"
-                    disabled={loading || !query.trim()}
-                    className="inline-flex items-center justify-center rounded-full bg-sky-600 px-6 py-3 text-sm font-semibold text-white transition hover:bg-sky-700 disabled:cursor-not-allowed disabled:bg-slate-400"
-                  >
-                    {loading ? "Generating answer…" : "Get answer"}
-                  </button>
-                  <p className="text-sm text-slate-500">
-                    {error ? `Error: ${error}` : "Responses are based on document chunks and retrieved passages."}
-                  </p>
-                </div>
+                <button
+                  type="submit"
+                  disabled={loading || !query.trim()}
+                  className="gradiant-button inline-flex h-14 items-center justify-center rounded-full px-8 text-sm font-semibold text-white shadow-[0_20px_50px_rgba(56,189,248,0.24)] transition duration-300 hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {loading ? "Sending..." : "Send"}
+                </button>
               </form>
+
+              <div className="mt-4 flex flex-wrap justify-center gap-3">
+                {["Create Image", "Surprise Me", "Get Advice", "Brainstorm", "Analyze Images"].map((label) => (
+                  <span
+                    key={label}
+                    className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-slate-200 shadow-[0_10px_30px_rgba(15,23,42,0.25)]"
+                  >
+                    {label}
+                  </span>
+                ))}
+              </div>
             </div>
           </div>
         </section>
 
-        <section className="grid gap-8 lg:grid-cols-[1.4fr_0.9fr]">
-          <div className="rounded-3xl bg-white p-8 shadow-2xl shadow-slate-200">
-            <h2 className="text-xl font-semibold text-slate-900">Answer</h2>
-            <div className="mt-6 min-h-[220px] rounded-3xl border border-slate-200 bg-slate-50 p-6 text-sm leading-7 text-slate-700">
-              {loading ? (
-                <p>Loading answer…</p>
-              ) : answer ? (
-                <p>{answer}</p>
-              ) : (
-                <p className="text-slate-500">Submit a question to see the generated answer here.</p>
-              )}
-            </div>
-          </div>
-
-          <div className="rounded-3xl bg-white p-8 shadow-2xl shadow-slate-200">
-            <div className="flex items-center justify-between gap-4">
-              <div>
-                <h2 className="text-xl font-semibold text-slate-900">Retrieved passages</h2>
-                <p className="text-sm text-slate-500">Displays sources and excerpts used to answer your question.</p>
-              </div>
-              <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
-                {sources.length} items
-              </span>
-            </div>
-
-            <div className="mt-6 space-y-4">
-              {sources.length === 0 ? (
-                <div className="rounded-3xl border border-dashed border-slate-200 bg-slate-50 p-6 text-sm text-slate-500">
-                  No passages available yet. Do a query to show retrieved context.
+        <section className="mx-auto w-full max-w-6xl px-4 pb-16 sm:px-6 lg:px-10">
+          <div className="grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
+            <div className="panel-glow rounded-[32px] border border-white/10 bg-[rgba(255,255,255,0.04)] p-8 shadow-[0_30px_90px_rgba(2,10,30,0.2)]">
+              <div className="flex items-center justify-between gap-4">
+                <div>
+                  <p className="text-sm uppercase tracking-[0.3em] text-sky-300">Answer</p>
+                  <h2 className="mt-2 text-3xl font-semibold text-white">Response</h2>
                 </div>
-              ) : (
-                sources.map((source, index) => (
-                  <article
-                    key={`${source.source}-${index}`}
-                    className="rounded-3xl border border-slate-200 bg-slate-50 p-5"
-                  >
-                    <div className="mb-3 flex items-center justify-between gap-3">
-                      <p className="text-sm font-semibold text-slate-900">{source.source || "Unknown source"}</p>
-                      <span className="rounded-full bg-slate-200 px-2 py-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-600">
-                        Passage {index + 1}
-                      </span>
-                    </div>
-                    <p className="whitespace-pre-wrap text-sm leading-7 text-slate-700">{source.text}</p>
-                  </article>
-                ))
-              )}
+                <span className="rounded-full bg-slate-900/80 px-3 py-1 text-xs font-semibold uppercase tracking-[0.28em] text-slate-300">
+                  {loading ? "Loading" : "Ready"}
+                </span>
+              </div>
+              <div className="mt-8 min-h-[240px] rounded-[28px] border border-slate-700/80 bg-slate-950/75 p-6 text-sm leading-7 text-slate-200 shadow-[inset_0_1px_0_rgba(255,255,255,0.02)]">
+                {loading ? (
+                  <p>Loading answer…</p>
+                ) : answer ? (
+                  <p>{answer}</p>
+                ) : (
+                  <p className="text-slate-500">Scroll down to view the answer. Ask a question to populate this section.</p>
+                )}
+              </div>
+            </div>
+
+            <div className="panel-glow rounded-[32px] border border-white/10 bg-[rgba(255,255,255,0.04)] p-8 shadow-[0_30px_90px_rgba(2,10,30,0.2)]">
+              <div className="flex items-center justify-between gap-4">
+                <div>
+                  <p className="text-sm uppercase tracking-[0.3em] text-fuchsia-300">Source</p>
+                  <h2 className="mt-2 text-3xl font-semibold text-white">Retrieved passages</h2>
+                </div>
+                <span className="rounded-full bg-slate-900/80 px-3 py-1 text-xs font-semibold uppercase tracking-[0.28em] text-slate-300">
+                  {sources.length} items
+                </span>
+              </div>
+
+              <div className="mt-8 space-y-4">
+                {sources.length === 0 ? (
+                  <div className="rounded-[28px] border border-dashed border-slate-700/80 bg-slate-950/75 p-6 text-sm text-slate-500">
+                    No passages available yet. After submitting your query, the retrieved sources appear here.
+                  </div>
+                ) : (
+                  sources.map((source, index) => (
+                    <article
+                      key={`${source.source}-${index}`}
+                      className="rounded-[28px] border border-slate-700/80 bg-slate-950/75 p-5"
+                    >
+                      <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                        <p className="text-sm font-semibold text-white">{source.source || "Unknown source"}</p>
+                        <span className="rounded-full bg-sky-500/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.24em] text-sky-200">
+                          Passage {index + 1}
+                        </span>
+                      </div>
+                      <p className="whitespace-pre-wrap text-sm leading-7 text-slate-300">{source.text}</p>
+                    </article>
+                  ))
+                )}
+              </div>
             </div>
           </div>
         </section>
