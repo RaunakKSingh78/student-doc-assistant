@@ -64,7 +64,7 @@ export default function Home() {
           <div className="w-full max-w-5xl rounded-[40px] border border-white/10 bg-[rgba(255,255,255,0.06)] p-10 shadow-[0_60px_140px_rgba(2,10,30,0.45)] backdrop-blur-2xl">
             <div className="space-y-8 text-center">
               <div className="inline-flex rounded-full border border-sky-300/30 bg-sky-300/10 px-5 py-2 text-xs uppercase tracking-[0.35em] text-sky-200 shadow-[0_0_40px_rgba(56,189,248,0.18)]">
-                AI Document Assistant
+                  Docs AI
               </div>
               <div>
                 <h1 className="text-5xl font-semibold tracking-tight text-white sm:text-6xl">
@@ -74,7 +74,7 @@ export default function Home() {
                   </span>
                 </h1>
                 <p className="mx-auto mt-6 max-w-3xl text-base leading-8 text-slate-300 sm:text-lg">
-                  Ready to assist you with anything you need. Type a question below and discover answers powered by your documents.
+                  Please type your query below.
                 </p>
               </div>
 
@@ -97,7 +97,7 @@ export default function Home() {
               </form>
 
               <div className="mt-4 flex flex-wrap justify-center gap-3">
-                {["Create Image", "Surprise Me", "Get Advice", "Brainstorm", "Analyze Images"].map((label) => (
+                {["Accomodation Rules", "Hostel ruels", "Penalty Points", "PhD and PG Rules", "UG Rules"].map((label) => (
                   <span
                     key={label}
                     className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-slate-200 shadow-[0_10px_30px_rgba(15,23,42,0.25)]"
