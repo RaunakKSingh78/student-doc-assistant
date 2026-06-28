@@ -1,5 +1,6 @@
 import os
 import sys
+from pathlib import Path
 from typing import List
 from langchain_core.documents import Document
 from dotenv import load_dotenv
@@ -51,9 +52,20 @@ class RAGSearch:
             ("human", "{question}"),
         ])
 
-    def search_and_summarize(self, query: str, top_k: int = 5) -> str:
+    def search_and_summarize(self, query: str, top_k: int = 5) -> dict:
         # 1. Retrieve relevant context from the Vector Store (converting query to embeddings under the hood)
         retrieved_docs = self.vectorstore.retrieve_context(query, top_k=top_k)
+
+        passages = []
+        for doc in retrieved_docs:
+            source = doc.metadata.get("source") or doc.metadata.get("filename") or "unknown_source"
+            if source and isinstance(source, str):
+                source = Path(source).name
+            passages.append({
+                "source": source,
+                "text": doc.page_content,
+                "metadata": dict(doc.metadata) if hasattr(doc, "metadata") else {},
+            })
         
         # 2. Format the retrieved context
         context_str = "\n\n".join(doc.page_content for doc in retrieved_docs)
@@ -61,9 +73,12 @@ class RAGSearch:
         # 3. Combine with prompt template
         prompt_value = self.prompt_template.format_messages(context=context_str, question=query)
         
-        # 4. Feed combined prompt into LLM and return the generated answer
+        # 4. Feed combined prompt into LLM and return the generated answer plus retrieved passages
         response = self.llm.invoke(prompt_value)
-        return response.content
+        return {
+            "answer": response.content,
+            "passages": passages,
+        }
 
 if __name__ == "__main__":
     rag_search = RAGSearch()

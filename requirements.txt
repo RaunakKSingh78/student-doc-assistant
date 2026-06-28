@@ -11,3 +11,4 @@ python-dotenv
 docx2txt
 openpyxl
 unstructured
+

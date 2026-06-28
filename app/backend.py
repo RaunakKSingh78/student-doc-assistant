@@ -41,9 +41,16 @@ class QueryRequest(BaseModel):
     top_k: Optional[int] = 5
 
 
+class SourceItem(BaseModel):
+    source: str
+    text: str
+    metadata: dict = {}
+
+
 class QueryResponse(BaseModel):
     query: str
     answer: str
+    sources: list[SourceItem] = []
 
 
 def ensure_processed_chunks() -> None:
@@ -106,8 +113,12 @@ async def query_endpoint(request: QueryRequest) -> QueryResponse:
     if rag_search is None:
         raise HTTPException(status_code=503, detail="RAG engine is not initialized yet.")
 
-    answer = rag_search.search_and_summarize(request.query, top_k=request.top_k)
-    return QueryResponse(query=request.query, answer=answer)
+    result = rag_search.search_and_summarize(request.query, top_k=request.top_k)
+    return QueryResponse(
+        query=request.query,
+        answer=result["answer"],
+        sources=result["passages"],
+    )
 
 
 @app.post(f"{API_PREFIX}/rebuild")
