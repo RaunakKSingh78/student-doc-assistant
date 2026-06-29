@@ -20,7 +20,7 @@ A Retrieval-Augmented Generation (RAG) assistant for IIT Indore students. Ask a 
 
 Hostel Rules and Regulations
 
-Source documents are stored in `data/raw/`. See `data/processed/` for chunked output.
+Source documents are stored in `Data/raw/`. See `Data/processed/` for chunked output.
 
 ---
 
