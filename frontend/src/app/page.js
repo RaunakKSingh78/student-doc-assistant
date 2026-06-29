@@ -4,6 +4,74 @@ import { useEffect, useState } from "react";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "http://localhost:8000";
 
+const renderFormattedAnswer = (text) => {
+  if (!text) return null;
+
+  const lines = text.split("\n");
+  const elements = [];
+  let currentList = [];
+
+  const parseInlineMarkdown = (line) => {
+    // Basic bold parsing: **text**
+    const parts = line.split(/(\*\*.*?\*\*)/g);
+    return parts.map((part, index) => {
+      if (part.startsWith("**") && part.endsWith("**")) {
+        return (
+          <strong key={index} className="font-semibold text-sky-200">
+            {part.slice(2, -2)}
+          </strong>
+        );
+      }
+      return part;
+    });
+  };
+
+  lines.forEach((line, index) => {
+    const trimmedLine = line.trim();
+
+    // Check if line is a bullet point
+    if (trimmedLine.startsWith("* ") || trimmedLine.startsWith("- ")) {
+      const content = trimmedLine.substring(2);
+      currentList.push(
+        <li key={`li-${index}`} className="ml-5 list-disc pl-1 mb-1 text-slate-200">
+          {parseInlineMarkdown(content)}
+        </li>
+      );
+    } else {
+      // If we were building a list, push it first
+      if (currentList.length > 0) {
+        elements.push(
+          <ul key={`ul-${index}`} className="mb-4 space-y-1">
+            {currentList}
+          </ul>
+        );
+        currentList = [];
+      }
+
+      if (trimmedLine === "") {
+        elements.push(<div key={`br-${index}`} className="h-2" />);
+      } else {
+        elements.push(
+          <p key={`p-${index}`} className="mb-4 leading-relaxed text-slate-200">
+            {parseInlineMarkdown(line)}
+          </p>
+        );
+      }
+    }
+  });
+
+  // Push any remaining list
+  if (currentList.length > 0) {
+    elements.push(
+      <ul key={`ul-end`} className="mb-4 space-y-1">
+        {currentList}
+      </ul>
+    );
+  }
+
+  return <div>{elements}</div>;
+};
+
 export default function Home() {
   const [query, setQuery] = useState("");
   const [answer, setAnswer] = useState("");
@@ -126,7 +194,7 @@ export default function Home() {
                 {loading ? (
                   <p>Loading answer…</p>
                 ) : answer ? (
-                  <p>{answer}</p>
+                  renderFormattedAnswer(answer)
                 ) : (
                   <p className="text-slate-500">Scroll down to view the answer. Ask a question to populate this section.</p>
                 )}
