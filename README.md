@@ -86,15 +86,29 @@ cp .env.example .env
 ---
 
 ## Running the app
+You will need to run the **Backend API** and the **Frontend Website** in separate terminal windows.
 
+### 1. Start the Backend Server
+Activate the virtual environment and run uvicorn:
 ```bash
-To see UI, you must be inside frontend folder(use cd frontend)
-1. To start backend server:  uvicorn app.backend:app --reload --host 0.0.0.0 --port 8000
-2. To start app : npm run dev
+# Windows (PowerShell)
+.venv\Scripts\Activate.ps1
+uvicorn app.backend:app --reload --host 0.0.0.0 --port 8000
 
+# macOS / Linux / Git Bash
+source .venv/bin/activate
+uvicorn app.backend:app --reload --host 0.0.0.0 --port 8000
 ```
+This starts the backend at `http://localhost:8000`.
 
-The app opens at `http://localhost:3000` in your browser.
+### 2. Start the Frontend Website
+In a **new terminal window**, navigate to the `frontend` folder, install the node modules, and run the Next.js development server:
+```bash
+cd frontend
+npm install
+npm run dev
+```
+The website UI opens at `http://localhost:3000` in your browser.
 
 ---
 
