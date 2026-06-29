@@ -11,4 +11,5 @@ python-dotenv
 docx2txt
 openpyxl
 unstructured
-
+fastapi
+uvicorn
