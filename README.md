@@ -18,7 +18,7 @@ A Retrieval-Augmented Generation (RAG) assistant for IIT Indore students. Ask a 
 
 ## Domain
 
-> _[Fill this in once you've decided — e.g. "Campus Placement Guidelines for IIT Indore"]_
+Hostel Rules and Regulations
 
 Source documents are stored in `data/raw/`. See `data/processed/` for chunked output.
 
@@ -55,7 +55,7 @@ brew install uv
 
 **1. Clone the repo**
 ```bash
-git clone https://github.com/YOUR_USERNAME/student-doc-assistant.git
+git clone https://github.com/RaunakKSingh/student-doc-assistant.git
 cd student-doc-assistant
 ```
 
