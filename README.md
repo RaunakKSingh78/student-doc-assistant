@@ -62,6 +62,7 @@ cd student-doc-assistant
 **2. Create a virtual environment (recommended)**
 ```bash
 # Create a virtual environment using uv
+uv init
 uv venv
 
 # Activate the virtual environment
