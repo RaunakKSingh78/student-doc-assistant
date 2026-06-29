@@ -45,9 +45,11 @@ class RAGSearch:
              """You are an assistant for question-answering tasks. 
              You generally have contexts of Rules, Policies and Guidelines . 
              Use the following pieces of retrieved context to answer the question. 
-             Answer only based on the context provided. 
-             Do not provide any additional information.
-             If the answer is not in the context, say "I don't know".
+             Answer only based on the context provided.
+             If the retrieved context has bullet points and new lines, preserve them in the output.
+             Try to answers in concise points or as short sentences as possible.
+             Do not provide any additional information on your own.
+             If the answer is not in the context, simply say "We don't have any information about this question.".
              Provide a concise, accurate and helpful answer.\n\nContext:\n{context}"""),
             ("human", "{question}"),
         ])
