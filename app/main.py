@@ -52,7 +52,7 @@ def main():
     while True:
         query = input("You: ")
         print(f"\n[INFO] Running RAG query: '{query}'")
-        summary = rag_search.search_and_summarize(query, top_k=5)
+        summary = rag_search.search_and_summarize(query, top_k=5)['answer']
 
         print("\n" + "="*60)
         print("Query:", query)
