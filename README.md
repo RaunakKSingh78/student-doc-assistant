@@ -115,7 +115,7 @@ python src/ingestion.py
 
 ```
 student-doc-assistant/
-├── data/
+├── Data/
 │   ├── raw/               # Original PDF source documents
 │   └── processed/         # Cleaned text and chunk JSON files
 ├── src/
