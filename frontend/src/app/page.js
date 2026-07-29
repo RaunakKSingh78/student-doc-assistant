@@ -76,6 +76,7 @@ export default function Home() {
   const [query, setQuery] = useState("");
   const [answer, setAnswer] = useState("");
   const [sources, setSources] = useState([]);
+  const [evaluationReport, setEvaluationReport] = useState(null);
   const [status, setStatus] = useState("Checking backend...");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -99,6 +100,7 @@ export default function Home() {
     setError(null);
     setAnswer("");
     setSources([]);
+    setEvaluationReport(null);
 
     try {
       const response = await fetch(`${API_BASE}/api/query`, {
@@ -117,6 +119,7 @@ export default function Home() {
       const data = await response.json();
       setAnswer(data.answer);
       setSources(data.sources || []);
+      setEvaluationReport(data.evaluation_report || null);
     } catch (err) {
       setError(err.message || "Unable to fetch answer");
     } finally {
@@ -178,26 +181,28 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="mx-auto w-full max-w-6xl px-4 pb-16 sm:px-6 lg:px-10">
+        <section className="mx-auto w-full max-w-6xl px-4 pb-16 sm:px-6 lg:px-10 space-y-8">
           <div className="grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
-            <div className="panel-glow rounded-[32px] border border-white/10 bg-[rgba(255,255,255,0.04)] p-8 shadow-[0_30px_90px_rgba(2,10,30,0.2)]">
-              <div className="flex items-center justify-between gap-4">
-                <div>
-                  <p className="text-sm uppercase tracking-[0.3em] text-sky-300">Answer</p>
-                  <h2 className="mt-2 text-3xl font-semibold text-white">Response</h2>
+            <div className="panel-glow rounded-[32px] border border-white/10 bg-[rgba(255,255,255,0.04)] p-8 shadow-[0_30px_90px_rgba(2,10,30,0.2)] flex flex-col justify-between">
+              <div>
+                <div className="flex items-center justify-between gap-4">
+                  <div>
+                    <p className="text-sm uppercase tracking-[0.3em] text-sky-300">Answer</p>
+                    <h2 className="mt-2 text-3xl font-semibold text-white">Response</h2>
+                  </div>
+                  <span className="rounded-full bg-slate-900/80 px-3 py-1 text-xs font-semibold uppercase tracking-[0.28em] text-slate-300">
+                    {loading ? "Loading" : "Ready"}
+                  </span>
                 </div>
-                <span className="rounded-full bg-slate-900/80 px-3 py-1 text-xs font-semibold uppercase tracking-[0.28em] text-slate-300">
-                  {loading ? "Loading" : "Ready"}
-                </span>
-              </div>
-              <div className="mt-8 min-h-[240px] rounded-[28px] border border-slate-700/80 bg-slate-950/75 p-6 text-sm leading-7 text-slate-200 shadow-[inset_0_1px_0_rgba(255,255,255,0.02)]">
-                {loading ? (
-                  <p>Loading answer…</p>
-                ) : answer ? (
-                  renderFormattedAnswer(answer)
-                ) : (
-                  <p className="text-slate-500">Scroll down to view the answer. Ask a question to populate this section.</p>
-                )}
+                <div className="mt-8 min-h-[240px] rounded-[28px] border border-slate-700/80 bg-slate-950/75 p-6 text-sm leading-7 text-slate-200 shadow-[inset_0_1px_0_rgba(255,255,255,0.02)]">
+                  {loading ? (
+                    <p>Loading answer…</p>
+                  ) : answer ? (
+                    renderFormattedAnswer(answer)
+                  ) : (
+                    <p className="text-slate-500">Scroll down to view the answer. Ask a question to populate this section.</p>
+                  )}
+                </div>
               </div>
             </div>
 
@@ -236,6 +241,52 @@ export default function Home() {
               </div>
             </div>
           </div>
+
+          {/* Dynamic Evaluation Report Card */}
+          {evaluationReport && (
+            <div className="panel-glow rounded-[32px] border border-emerald-500/30 bg-[rgba(16,185,129,0.05)] p-8 shadow-[0_30px_90px_rgba(2,10,30,0.2)]">
+              <div className="flex flex-wrap items-center justify-between gap-4">
+                <div>
+                  <p className="text-sm uppercase tracking-[0.3em] text-emerald-300">Retrieval Evaluation</p>
+                  <h2 className="mt-1 text-3xl font-semibold text-white">Evaluation Report</h2>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  <span className="rounded-full bg-emerald-500/10 border border-emerald-500/30 px-4 py-1.5 text-xs font-semibold text-emerald-200">
+                    ⚡ {evaluationReport.latency_ms} ms
+                  </span>
+                  <span className="rounded-full bg-sky-500/10 border border-sky-500/30 px-4 py-1.5 text-xs font-semibold text-sky-200">
+                    🔍 {evaluationReport.mode}
+                  </span>
+                  <span className="rounded-full bg-purple-500/10 border border-purple-500/30 px-4 py-1.5 text-xs font-semibold text-purple-200">
+                    🎯 Confidence: {evaluationReport.confidence}
+                  </span>
+                </div>
+              </div>
+
+              <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
+                <div className="rounded-2xl border border-white/10 bg-slate-950/75 p-4">
+                  <p className="text-xs uppercase tracking-wider text-slate-400">Passages</p>
+                  <p className="mt-1 text-xl font-bold text-white">{evaluationReport.retrieved_count} / {evaluationReport.top_k}</p>
+                </div>
+                <div className="rounded-2xl border border-white/5 bg-slate-950/75 p-4">
+                  <p className="text-xs uppercase tracking-wider text-slate-400">Context Volume</p>
+                  <p className="mt-1 text-xl font-bold text-white">~{evaluationReport.estimated_tokens} tokens</p>
+                </div>
+                <div className="rounded-2xl border border-white/5 bg-slate-950/75 p-4">
+                  <p className="text-xs uppercase tracking-wider text-slate-400">Sources</p>
+                  <p className="mt-1 text-xl font-bold text-white">{evaluationReport.unique_sources} docs</p>
+                </div>
+                <div className="rounded-2xl border border-white/5 bg-slate-950/75 p-4">
+                  <p className="text-xs uppercase tracking-wider text-slate-400">Keyword Match</p>
+                  <p className="mt-1 text-xl font-bold text-emerald-300">{evaluationReport.keyword_alignment_pct}%</p>
+                </div>
+              </div>
+
+              <div className="mt-4 rounded-2xl border border-white/10 bg-slate-950/80 p-5 text-sm text-slate-200 font-mono whitespace-pre-wrap leading-relaxed">
+                {evaluationReport.summary_text}
+              </div>
+            </div>
+          )}
         </section>
       </div>
     </div>
