@@ -52,15 +52,20 @@ def main():
     while True:
         query = input("You: ")
         print(f"\n[INFO] Running RAG query: '{query}'")
-        summary = rag_search.search_and_summarize(query, top_k=5)['answer']
+        res = rag_search.search_and_summarize(query, top_k=5)
+        summary = res['answer']
+        eval_report = res.get('evaluation_report', {})
 
         print("\n" + "="*60)
         print("Query:", query)
         print("="*60)
-        print("Answer:", summary)
+        print("Answer:\n", summary)
+        print("-" * 60)
+        if eval_report and "summary_text" in eval_report:
+            print(eval_report["summary_text"])
         print("="*60)
 
-        cont = input("Do you want to continue? (y/n): ")
+        cont = input("\nDo you want to continue? (y/n): ")
         if cont.lower() != "y":
             break
 
