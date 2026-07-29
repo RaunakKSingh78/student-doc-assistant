@@ -51,6 +51,7 @@ class QueryResponse(BaseModel):
     query: str
     answer: str
     sources: list[SourceItem] = []
+    evaluation_report: Optional[dict] = None
 
 
 def ensure_processed_chunks() -> None:
@@ -118,6 +119,7 @@ async def query_endpoint(request: QueryRequest) -> QueryResponse:
         query=request.query,
         answer=result["answer"],
         sources=result["passages"],
+        evaluation_report=result.get("evaluation_report"),
     )
 
 
