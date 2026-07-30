@@ -1,7 +1,7 @@
 # Student Document Assistant
 **IITISoC 2026 — AI / ML Track**
 
-A Retrieval-Augmented Generation (RAG) assistant for IIT Indore students. Ask a question about institutional policies, and the system retrieves the relevant source passages and generates a grounded answer with citations.
+A Retrieval-Augmented Generation (RAG) assistant for IIT Indore students. Ask any question about institutional courses, and the system retrieves the relevant source passages and generates a grounded answer with citations.
 
 ---
 
@@ -131,16 +131,27 @@ python src/ingestion.py
 ```
 student-doc-assistant/
 ├── Data/
-│   ├── raw/               # Original PDF source documents
-│   └── processed/         # Cleaned text and chunk JSON files
+│   ├── raw/                   # Original source documents (PDFs, etc.)
+│   └── processed/             # Preprocessed JSON document chunk files
 ├── src/
 │   ├── __init__.py
-│   ├── ingestion.py       # Member A: PDF loader + chunker
-│   ├── retriever.py       # Member B: ChromaDB + BM25 search
-│   └── generator.py       # Member C: LLM + citations
+│   ├── vector_store.py        # ChromaDB dense vector store manager
+│   ├── ingestion.py           # Multi-format document loader, metadata tagger & parent-child chunker
+│   ├── query_transform.py     # Query expansion, academic query rewriter & multi-query generator
+│   ├── hybrid_retriever.py    # Dense (Chroma) + Sparse (BM25) search with Reciprocal Rank Fusion (RRF)
+│   ├── reranker.py            # Cross-Encoder (ms-marco-MiniLM-L-6-v2) candidate passage reranker
+│   ├── parent_retriever.py    # Resolves retrieved child chunks to full parent document context
+│   ├── metrics.py             # Performance & quality evaluation metrics (latency, Hit Rate, MRR)
+│   ├── retriever.py           # Advanced RAG Retriever facade orchestrating full pipeline
+│   └── generator.py           # LLM answer generator via Groq (llama-3.3-70b) with evaluation report
 ├── app/
-│   └── main.py            # Member D: Next.js UI
-├── .env.example           # API key template (copy to .env)
+│   ├── backend.py             # FastAPI REST backend service exposing query & status API
+│   └── main.py                # Interactive CLI RAG assistant runner
+├── frontend/                  # Next.js web UI frontend
+│   └── src/app/               # Application pages, styles, and layout components
+├── pyproject.toml             # Project build configuration & dependency specifications
+├── requirements.txt           # Python dependency requirements
+├── .env.example               # API key environment template (copy to .env)
 ├── .gitignore
 └── README.md
 ```

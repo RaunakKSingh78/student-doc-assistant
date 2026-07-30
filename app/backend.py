@@ -51,6 +51,7 @@ class QueryResponse(BaseModel):
     query: str
     answer: str
     sources: list[SourceItem] = []
+    evaluation_report: Optional[dict] = None
 
 
 def ensure_processed_chunks() -> None:
@@ -76,7 +77,8 @@ def ensure_vector_store() -> None:
             raise RuntimeError("No chunks loaded from processed data.")
 
         os.makedirs(PERSIST_DIR, exist_ok=True)
-        from src.retriever import ChromaVectorStore
+        # pyrefly: ignore [missing-import]
+        from src.vector_store import ChromaVectorStore
 
         store = ChromaVectorStore(PERSIST_DIR)
         store.build_from_chunks(chunks)
@@ -118,13 +120,15 @@ async def query_endpoint(request: QueryRequest) -> QueryResponse:
         query=request.query,
         answer=result["answer"],
         sources=result["passages"],
+        evaluation_report=result.get("evaluation_report"),
     )
 
 
 @app.post(f"{API_PREFIX}/rebuild")
 async def rebuild_store() -> dict:
     ensure_processed_chunks()
-    from src.retriever import ChromaVectorStore
+    # pyrefly: ignore [missing-import]
+    from src.vector_store import ChromaVectorStore
 
     chunks = load_chunks_from_json(PROCESSED_DIR)
     if not chunks:

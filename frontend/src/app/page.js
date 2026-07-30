@@ -76,6 +76,7 @@ export default function Home() {
   const [query, setQuery] = useState("");
   const [answer, setAnswer] = useState("");
   const [sources, setSources] = useState([]);
+  const [evaluationReport, setEvaluationReport] = useState(null);
   const [status, setStatus] = useState("Checking backend...");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -99,6 +100,7 @@ export default function Home() {
     setError(null);
     setAnswer("");
     setSources([]);
+    setEvaluationReport(null);
 
     try {
       const response = await fetch(`${API_BASE}/api/query`, {
@@ -117,6 +119,7 @@ export default function Home() {
       const data = await response.json();
       setAnswer(data.answer);
       setSources(data.sources || []);
+      setEvaluationReport(data.evaluation_report || null);
     } catch (err) {
       setError(err.message || "Unable to fetch answer");
     } finally {
@@ -136,13 +139,13 @@ export default function Home() {
               </div>
               <div>
                 <h1 className="text-5xl font-semibold tracking-tight text-white sm:text-6xl">
-                  Hey Armando!
+                  Course Catalog AI
                   <span className="block text-transparent bg-clip-text bg-gradient-to-r from-sky-300 via-fuchsia-300 to-emerald-300">
-                    Can I help you with anything?
+                    Ask about course syllabi, prerequisites & curricula
                   </span>
                 </h1>
                 <p className="mx-auto mt-6 max-w-3xl text-base leading-8 text-slate-300 sm:text-lg">
-                  Please type your query below.
+                  Ask any question regarding engineering course structures, department syllabi, or course details.
                 </p>
               </div>
 
@@ -151,7 +154,7 @@ export default function Home() {
                   type="text"
                   value={query}
                   onChange={(event) => setQuery(event.target.value)}
-                  placeholder="Ask anything you need"
+                  placeholder="e.g. Explain briefly about the syllabus of Data Structures and Algorithms."
                   className="w-full rounded-full border border-white/10 bg-slate-950/70 px-6 py-4 text-base text-white placeholder:text-slate-500 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] outline-none transition duration-300 focus:border-sky-400 focus:ring-2 focus:ring-sky-400/20"
                   required
                 />
@@ -165,39 +168,50 @@ export default function Home() {
               </form>
 
               <div className="mt-4 flex flex-wrap justify-center gap-3">
-                {["Accommodation Rules", "Hostel Rules", "Penalty Points", "PhD and PG Rules", "UG Rules"].map((label) => (
-                  <span
-                    key={label}
-                    className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-slate-200 shadow-[0_10px_30px_rgba(15,23,42,0.25)]"
+                {[
+                  { label: "Data Structures & Algorithms", queryText: "Explain briefly about the syllabus of Data Structures and Algorithms." },
+                  { label: "Computer Science (CSE)", queryText: "What are the core courses in Computer Science and Engineering?" },
+                  { label: "Electrical Engineering (EE)", queryText: "What is the syllabus for Signals and Systems in EE?" },
+                  { label: "Mechanical Engineering (ME)", queryText: "What courses are offered in Mechanical Engineering?" },
+                  { label: "Mathematics & Computing (MnC)", queryText: "Tell me about Mathematics and Computing course structure." },
+                  { label: "AI & Data Science", queryText: "What are the Artificial Intelligence courses in the catalog?" },
+                ].map((item) => (
+                  <button
+                    key={item.label}
+                    type="button"
+                    onClick={() => setQuery(item.queryText)}
+                    className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-slate-200 shadow-[0_10px_30px_rgba(15,23,42,0.25)] transition hover:bg-sky-500/20 hover:border-sky-400/40"
                   >
-                    {label}
-                  </span>
+                    {item.label}
+                  </button>
                 ))}
               </div>
             </div>
           </div>
         </section>
 
-        <section className="mx-auto w-full max-w-6xl px-4 pb-16 sm:px-6 lg:px-10">
+        <section className="mx-auto w-full max-w-6xl px-4 pb-16 sm:px-6 lg:px-10 space-y-8">
           <div className="grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
-            <div className="panel-glow rounded-[32px] border border-white/10 bg-[rgba(255,255,255,0.04)] p-8 shadow-[0_30px_90px_rgba(2,10,30,0.2)]">
-              <div className="flex items-center justify-between gap-4">
-                <div>
-                  <p className="text-sm uppercase tracking-[0.3em] text-sky-300">Answer</p>
-                  <h2 className="mt-2 text-3xl font-semibold text-white">Response</h2>
+            <div className="panel-glow rounded-[32px] border border-white/10 bg-[rgba(255,255,255,0.04)] p-8 shadow-[0_30px_90px_rgba(2,10,30,0.2)] flex flex-col justify-between">
+              <div>
+                <div className="flex items-center justify-between gap-4">
+                  <div>
+                    <p className="text-sm uppercase tracking-[0.3em] text-sky-300">Answer</p>
+                    <h2 className="mt-2 text-3xl font-semibold text-white">Response</h2>
+                  </div>
+                  <span className="rounded-full bg-slate-900/80 px-3 py-1 text-xs font-semibold uppercase tracking-[0.28em] text-slate-300">
+                    {loading ? "Loading" : "Ready"}
+                  </span>
                 </div>
-                <span className="rounded-full bg-slate-900/80 px-3 py-1 text-xs font-semibold uppercase tracking-[0.28em] text-slate-300">
-                  {loading ? "Loading" : "Ready"}
-                </span>
-              </div>
-              <div className="mt-8 min-h-[240px] rounded-[28px] border border-slate-700/80 bg-slate-950/75 p-6 text-sm leading-7 text-slate-200 shadow-[inset_0_1px_0_rgba(255,255,255,0.02)]">
-                {loading ? (
-                  <p>Loading answer…</p>
-                ) : answer ? (
-                  renderFormattedAnswer(answer)
-                ) : (
-                  <p className="text-slate-500">Scroll down to view the answer. Ask a question to populate this section.</p>
-                )}
+                <div className="mt-8 min-h-[240px] rounded-[28px] border border-slate-700/80 bg-slate-950/75 p-6 text-sm leading-7 text-slate-200 shadow-[inset_0_1px_0_rgba(255,255,255,0.02)]">
+                  {loading ? (
+                    <p>Loading answer…</p>
+                  ) : answer ? (
+                    renderFormattedAnswer(answer)
+                  ) : (
+                    <p className="text-slate-500">Scroll down to view the answer. Ask a question to populate this section.</p>
+                  )}
+                </div>
               </div>
             </div>
 
@@ -236,6 +250,52 @@ export default function Home() {
               </div>
             </div>
           </div>
+
+          {/* Dynamic Evaluation Report Card */}
+          {evaluationReport && (
+            <div className="panel-glow rounded-[32px] border border-emerald-500/30 bg-[rgba(16,185,129,0.05)] p-8 shadow-[0_30px_90px_rgba(2,10,30,0.2)]">
+              <div className="flex flex-wrap items-center justify-between gap-4">
+                <div>
+                  <p className="text-sm uppercase tracking-[0.3em] text-emerald-300">Retrieval Evaluation</p>
+                  <h2 className="mt-1 text-3xl font-semibold text-white">Evaluation Report</h2>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  <span className="rounded-full bg-emerald-500/10 border border-emerald-500/30 px-4 py-1.5 text-xs font-semibold text-emerald-200">
+                    ⚡ {evaluationReport.latency_ms} ms
+                  </span>
+                  <span className="rounded-full bg-sky-500/10 border border-sky-500/30 px-4 py-1.5 text-xs font-semibold text-sky-200">
+                    🔍 {evaluationReport.mode}
+                  </span>
+                  <span className="rounded-full bg-purple-500/10 border border-purple-500/30 px-4 py-1.5 text-xs font-semibold text-purple-200">
+                    🎯 Confidence: {evaluationReport.confidence}
+                  </span>
+                </div>
+              </div>
+
+              <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
+                <div className="rounded-2xl border border-white/10 bg-slate-950/75 p-4">
+                  <p className="text-xs uppercase tracking-wider text-slate-400">Passages</p>
+                  <p className="mt-1 text-xl font-bold text-white">{evaluationReport.retrieved_count} / {evaluationReport.top_k}</p>
+                </div>
+                <div className="rounded-2xl border border-white/5 bg-slate-950/75 p-4">
+                  <p className="text-xs uppercase tracking-wider text-slate-400">Context Volume</p>
+                  <p className="mt-1 text-xl font-bold text-white">~{evaluationReport.estimated_tokens} tokens</p>
+                </div>
+                <div className="rounded-2xl border border-white/5 bg-slate-950/75 p-4">
+                  <p className="text-xs uppercase tracking-wider text-slate-400">Sources</p>
+                  <p className="mt-1 text-xl font-bold text-white">{evaluationReport.unique_sources} docs</p>
+                </div>
+                <div className="rounded-2xl border border-white/5 bg-slate-950/75 p-4">
+                  <p className="text-xs uppercase tracking-wider text-slate-400">Keyword Match</p>
+                  <p className="mt-1 text-xl font-bold text-emerald-300">{evaluationReport.keyword_alignment_pct}%</p>
+                </div>
+              </div>
+
+              <div className="mt-4 rounded-2xl border border-white/10 bg-slate-950/80 p-5 text-sm text-slate-200 font-mono whitespace-pre-wrap leading-relaxed">
+                {evaluationReport.summary_text}
+              </div>
+            </div>
+          )}
         </section>
       </div>
     </div>

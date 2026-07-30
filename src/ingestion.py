@@ -130,26 +130,85 @@ def load_all_documents(data_dir: str) -> List[Any]:
 
 class EmbeddingPipeline:
 
-    def __init__(self, model_name: str = "all-MiniLM-L6-v2", chunk_size: int = 1000, chunk_overlap: int = 200):
+    def __init__(
+        self,
+        model_name: str = "all-MiniLM-L6-v2",
+        chunk_size: int = 1000,
+        chunk_overlap: int = 200,
+        child_chunk_size: int = 300,
+        child_chunk_overlap: int = 50,
+    ):
         self.chunk_size = chunk_size
         self.chunk_overlap = chunk_overlap
-        # Standard LangChain embedding wrapper — replaces raw SentenceTransformer
+        self.child_chunk_size = child_chunk_size
+        self.child_chunk_overlap = child_chunk_overlap
         self.embeddings = HuggingFaceEmbeddings(
             model_name=model_name,
-            model_kwargs={"local_files_only": True}
         )
         print(f"[INFO] Loaded embedding model: {model_name}")
 
-    def chunk_documents(self, documents: List[Document]) -> List[Document]:
-        splitter = RecursiveCharacterTextSplitter(
+    def extract_metadata(self, doc: Document) -> dict:
+        meta = dict(doc.metadata) if hasattr(doc, "metadata") else {}
+        source = str(meta.get("source") or meta.get("filename") or "")
+        filename = Path(source).name.lower()
+
+        # Metadata Tagging (Course Code, Department)
+        if "cs" in filename or "computer" in filename:
+            meta["department"] = "Computer Science"
+        elif "me" in filename or "mechan" in filename:
+            meta["department"] = "Mechanical Engineering"
+        elif "ee" in filename or "electr" in filename:
+            meta["department"] = "Electrical Engineering"
+        elif "bio" in filename:
+            meta["department"] = "Biosciences"
+        else:
+            meta["department"] = "General Academics"
+
+        import re
+        course_code_match = re.search(r"([a-z]{2,4}-?\d{3})", filename, re.IGNORECASE)
+        if course_code_match:
+            meta["course_code"] = course_code_match.group(1).upper()
+
+        return meta
+
+    def chunk_documents(self, documents: List[Document], create_parent_child: bool = True) -> List[Document]:
+        parent_splitter = RecursiveCharacterTextSplitter(
             chunk_size=self.chunk_size,
             chunk_overlap=self.chunk_overlap,
             length_function=len,
             separators=["\n\n", "\n", " ", ""]
         )
-        chunks = splitter.split_documents(documents)
-        print(f"[INFO] Split {len(documents)} documents into {len(chunks)} chunks.")
-        return chunks
+
+        child_splitter = RecursiveCharacterTextSplitter(
+            chunk_size=self.child_chunk_size,
+            chunk_overlap=self.child_chunk_overlap,
+            length_function=len,
+            separators=["\n\n", "\n", " ", ""]
+        )
+
+        all_chunks: List[Document] = []
+        parent_docs = parent_splitter.split_documents(documents)
+
+        for p_idx, p_doc in enumerate(parent_docs):
+            enhanced_meta = self.extract_metadata(p_doc)
+            parent_id = f"parent_{p_idx}"
+            enhanced_meta["parent_id"] = parent_id
+            enhanced_meta["parent_content"] = p_doc.page_content
+            p_doc.metadata = enhanced_meta
+
+            if create_parent_child:
+                child_docs = child_splitter.split_documents([p_doc])
+                for c_idx, c_doc in enumerate(child_docs):
+                    c_meta = dict(c_doc.metadata)
+                    c_meta["chunk_id"] = f"{parent_id}_child_{c_idx}"
+                    c_doc.metadata = c_meta
+                    all_chunks.append(c_doc)
+            else:
+                all_chunks.append(p_doc)
+
+        print(f"[INFO] Processed {len(documents)} docs into {len(all_chunks)} chunks (parent-child={create_parent_child}).")
+        return all_chunks
+
 
 
 def save_chunks_to_json(chunks: List[Document], output_dir: str = "data/processed"):

@@ -13,3 +13,4 @@ openpyxl
 unstructured
 fastapi
 uvicorn
+rank_bm25
