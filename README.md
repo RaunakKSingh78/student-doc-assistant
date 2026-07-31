@@ -165,4 +165,4 @@ student-doc-assistant/
 
 Built for IITISoC 2026, Science & Technology Council, IIT Indore.
 
-[Watch Demo Video of Student Document Assistant](https://drive.google.com/file/d/1xZxnd57yREFf2AQdxBk2i0MTl91itbT9/view)
+[Watch Demo Video of Student Document Assistant](https://drive.google.com/file/d/1-1TqALMxaVpMTcfjP9Nnx9IXdAczfpYB/view?usp=sharing)
